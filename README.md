@@ -36,3 +36,13 @@ npm i socket.io
 И когда кто-то отключается - тоже уведомлять
 Broadcast - отправить всем, кроме текущего.
 Интересный вопрос: где хранятся текущие подключения?
+
+### 17.8 Sharing Your Location
+Используй  MDN geolocation
+```js
+navigator.geolocation.getCurrentPosition((position) => {
+    console.log(position)
+})
+```
+Чтобы создать ссылку на карты гугль, необходимо собрать такой урл
+https://google.com/maps?q=lat,long

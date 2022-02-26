@@ -38,6 +38,18 @@ io.on('connection', (socket) => {
         io.emit('message', text)
     })
 
+    // два поля вполне передаются, но мастер говорит - объект
+    // socket.on('sendLocation', (longitude, latitude) => {
+    //     console.log('location from client', longitude, latitude)
+    //     socket.broadcast.emit('message', `Location: ${longitude}, ${latitude} `)
+    // })
+    socket.on('sendLocation', (coords) => {
+        // console.log('location from client', coords.longitude, coords.latitude)
+        // io.emit('message', `Location: ${coords.longitude}, ${coords.latitude} `)
+        const location = `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
+        io.emit('message', location)
+    })
+
     // отключение в таком старнном месте
     socket.on('disconnect', () => {
         io.emit('message', 'user dicsonnected')// посылаем всем потому что нет смысла исключать текущего, он и так отключился
