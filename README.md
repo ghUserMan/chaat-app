@@ -10,3 +10,7 @@ http://expressjs.com/en/4x/api.html
 npm i express
 npm i nodemon --save-dev
 "dev": "nodemon ./src/index.js"
+
+### 17.3 WebSockets
+Смысл был в том что вебсокет это аткой протокол что позволяет клеинут стучатсья в сервер и серверу стучаться в клиента
+
