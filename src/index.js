@@ -22,7 +22,6 @@ app.get('/hi', (req, res) => {
     res.send('hi')
 })
 
-
 // server (emit) -> clinet (receive) - countUpdated
 // clinet (emit) -> server (receive) - increment
 
@@ -32,12 +31,20 @@ io.on('connection', (socket) => {
     console.log('new websocket connection')
 
     socket.emit('message', 'Welcome!')
+    socket.broadcast.emit('message', 'new user joined')
 
     socket.on('sendMessage', (text) => {
         console.log('from client', text)
         io.emit('message', text)
     })
+
+    // отключение в таком старнном месте
+    socket.on('disconnect', () => {
+        io.emit('message', 'user dicsonnected')// посылаем всем потому что нет смысла исключать текущего, он и так отключился
+    })
 })
+
+
 
 server.listen(port, () => {
     console.log('Server is up on port', port)
