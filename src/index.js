@@ -31,17 +31,6 @@ app.get('/hi', (req, res) => {
 io.on('connection', (socket) => {
     console.log('new websocket connection')
 
-    // // указываем какое событие посылается в зад, это наше личное сообщение
-    // // всё что после имени события - будет доступно на клиенте
-    // socket.emit('countUpdated', count)
-
-    // socket.on('increment', () => {
-    //     console.log('Server inc')
-    //     count++
-    //     // socket.emit('countUpdated', count) // работает только для одного (текущего) соединения
-    //     io.emit('countUpdated', count) // для всех соединений (а я думал в список придётся складывать) 
-    // })
-    
     socket.emit('message', 'Welcome!')
 
     socket.on('sendMessage', (text) => {

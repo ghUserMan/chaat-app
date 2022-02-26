@@ -3,32 +3,16 @@
 // и эта штука такио ткроет осединение
 const socket = io() // сохраняем открытый сокет
 
-
-// получаем от севрера 
-// count доступен ведь мы его пеердаём специально
-// socket.on('countUpdated', (count) => {
-//     console.log('Count has been updated', count)
-// })
-
-
-// const increment = document.querySelector('#increment')
-
-// increment.addEventListener('click', () => {
-//     console.log('Clocked!')
-//     socket.emit('increment')
-// })
-
 socket.on('message', (message) => {
     console.log('from server', message)
 })
 
-// пожно повесить слушателя не на кнопку, а на форму!
-// const sendMessage = document.querySelector('#message-form') ну и значение получать чеерз event 
-// event.targer.elements.message.value (где  message - имя поля дял ввода)
-const sendMessage = document.querySelector('#sendMessage') 
+const sendMessage = document.querySelector('#message-form') 
 
-sendMessage.addEventListener('click', (event) => {
+sendMessage.addEventListener('submit', (event) => {
     event.preventDefault()
-    const text = document.querySelector('#message').value
+    // const text = document.querySelector('input[name=message]').value
+    // а для такого расклада надо тип события с click на submit поменять
+    const text = event.target.elements.message.value
     socket.emit('sendMessage', text)
 })
