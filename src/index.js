@@ -16,13 +16,33 @@ const publicDirectoryPath = path.join(__dirname, '../public')
 app.use(express.json()) 
 app.use(express.static(publicDirectoryPath))
 
+let count = 0
+
+
 app.get('/hi', (req, res) => {
     res.send('hi')
 })
 
+
+// server (emit) -> clinet (receive) - countUpdated
+// clinet (emit) -> server (receive) - increment
+
 // подписываемся на события
-io.on('connection', () => {
+// socket - объект с информацией о новом соединении
+io.on('connection', (socket) => {
     console.log('new websocket connection')
+
+    // указываем какое событие посылается в зад, это наше личное сообщение
+    // всё что после имени события - будет доступно на клиенте
+    socket.emit('countUpdated', count)
+
+    socket.on('increment', () => {
+        console.log('Server inc')
+        count++
+        // socket.emit('countUpdated', count) // работает только для одного (текущего) соединения
+        io.emit('countUpdated', count) // для всех соединений (а я думал в список придётся складывать) 
+    })
+    
 })
 
 server.listen(port, () => {
