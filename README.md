@@ -7,3 +7,6 @@ https://nodejs.org/dist/latest-v16.x/docs/api/path.html
 http://expressjs.com/en/4x/api.html
 
 ### 17.2 Creating the Chat App Project
+npm i express
+npm i nodemon --save-dev
+"dev": "nodemon ./src/index.js"
