@@ -59,3 +59,6 @@ https://google.com/maps?q=lat,long
 ### 17.11 Rendering Messages
 Красиво показываем сообщенеи на странице, а не в консоли
 будем подставлять по шаблону
+
+### 17.12 Rendering Location Messages
+Будем делать крависую ссылку

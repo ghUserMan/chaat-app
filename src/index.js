@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
         // console.log('location from client', coords.longitude, coords.latitude)
         // io.emit('message', `Location: ${coords.longitude}, ${coords.latitude} `)
         const location = `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
-        io.emit('message', location)
+        io.emit('locationMessage', location) // сделали альтернативный тип сообщения
         callback()
     })
 
