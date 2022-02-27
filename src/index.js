@@ -2,6 +2,7 @@ const path = require('path')
 const http = require('http') // уже используем в  express
 const express = require('express')
 const socketio = require('socket.io')
+const Filter = require('bad-words')
 
 
 const app = express()
@@ -22,8 +23,8 @@ app.get('/hi', (req, res) => {
     res.send('hi')
 })
 
-// server (emit) -> clinet (receive) - countUpdated
-// clinet (emit) -> server (receive) - increment
+// server (emit) -> clinet (receive) -acknowledgement -> server countUpdated
+// clinet (emit) -> server (receive) -acknowledgement -> client increment
 
 // подписываемся на события
 // socket - объект с информацией о новом соединении
@@ -33,9 +34,18 @@ io.on('connection', (socket) => {
     socket.emit('message', 'Welcome!')
     socket.broadcast.emit('message', 'new user joined')
 
-    socket.on('sendMessage', (text) => {
+    //eventlistener
+    socket.on('sendMessage', (text, callback) => { //
+
+        const filter = new Filter()
+        if (filter.isProfane(text)) {
+            return callback('Some word is not allowed') // типа если есть ошибка - сообщаем о ней, иначе ответим пустотой
+        }
+
         console.log('from client', text)
         io.emit('message', text)
+        // callback('Yes') // само подтверждение, можно по своему усмотрению епердать аргумент
+        callback()
     })
 
     // два поля вполне передаются, но мастер говорит - объект
@@ -43,11 +53,12 @@ io.on('connection', (socket) => {
     //     console.log('location from client', longitude, latitude)
     //     socket.broadcast.emit('message', `Location: ${longitude}, ${latitude} `)
     // })
-    socket.on('sendLocation', (coords) => {
+    socket.on('sendLocation', (coords, callback) => {
         // console.log('location from client', coords.longitude, coords.latitude)
         // io.emit('message', `Location: ${coords.longitude}, ${coords.latitude} `)
         const location = `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
         io.emit('message', location)
+        callback()
     })
 
     // отключение в таком старнном месте

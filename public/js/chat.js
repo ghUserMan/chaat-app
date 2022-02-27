@@ -4,7 +4,7 @@
 const socket = io() // сохраняем открытый сокет
 
 socket.on('message', (message) => {
-    console.log('from server', message)
+    console.log('from server message:', message)
 })
 
 const sendMessage = document.querySelector('#message-form') 
@@ -13,7 +13,14 @@ sendMessage.addEventListener('submit', (event) => {
     // const text = document.querySelector('input[name=message]').value
     // а для такого расклада надо тип события с click на submit поменять
     const text = event.target.elements.message.value
-    socket.emit('sendMessage', text)
+    socket.emit('sendMessage', text, (error) => {
+
+        if (error) {
+            return console.log(error)
+        }
+        console.log('The message was delivered')
+        // console.log('The message was delivered', arg) // действие на подтверждение
+    })
 })
 
 
@@ -31,6 +38,8 @@ sendLocation.addEventListener('click', (event) => {
         socket.emit('sendLocation', {
             longitude: position.coords.longitude, 
             latitude: position.coords.latitude
+        }, () => {
+            console.log('Location shared!')
         })
     })
 
