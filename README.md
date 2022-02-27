@@ -61,4 +61,13 @@ https://google.com/maps?q=lat,long
 будем подставлять по шаблону
 
 ### 17.12 Rendering Location Messages
-Будем делать крависую ссылку
+Будем делать крависую ссылку местоположения
+
+### 17.13 Working with Time
+Вариант былых времён
+const now = new Date()
+now.toString()
+now.getDate() - день месяца
+now.getTime() - милисекунды юникс
+Сервер будет генерировать, а в браузере фоматировать
+https://momentjs.com

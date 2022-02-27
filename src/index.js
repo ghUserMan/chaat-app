@@ -3,6 +3,7 @@ const http = require('http') // уже используем в  express
 const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
+const {generateMessage} = require('./utils/messages')
 
 
 const app = express()
@@ -31,8 +32,8 @@ app.get('/hi', (req, res) => {
 io.on('connection', (socket) => {
     console.log('new websocket connection')
 
-    socket.emit('message', 'Welcome!')
-    socket.broadcast.emit('message', 'new user joined')
+    socket.emit('message', generateMessage('Welcome!')) // себе, новый формат {test: "message", createdAt: new Date().getTime()}
+    socket.broadcast.emit('message', generateMessage('New user joined')) // Остальным что кто-то подключился
 
     //eventlistener
     socket.on('sendMessage', (text, callback) => { //
@@ -43,7 +44,7 @@ io.on('connection', (socket) => {
         }
 
         console.log('from client', text)
-        io.emit('message', text)
+        io.emit('message', generateMessage(text)) // всем
         // callback('Yes') // само подтверждение, можно по своему усмотрению епердать аргумент
         callback()
     })
@@ -57,16 +58,16 @@ io.on('connection', (socket) => {
         // console.log('location from client', coords.longitude, coords.latitude)
         // io.emit('message', `Location: ${coords.longitude}, ${coords.latitude} `)
         const location = `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
-        io.emit('locationMessage', location) // сделали альтернативный тип сообщения
+        io.emit('locationMessage', location) // сделали альтернативный тип сообщения // всем
         callback()
     })
 
     // отключение в таком старнном месте
     socket.on('disconnect', () => {
-        io.emit('message', 'user dicsonnected')// посылаем всем потому что нет смысла исключать текущего, он и так отключился
+        // остальным что ушёл
+        io.emit('message', generateMessage('user dicsonnected'))// посылаем всем потому что нет смысла исключать текущего, он и так отключился
     })
 })
-
 
 
 server.listen(port, () => {

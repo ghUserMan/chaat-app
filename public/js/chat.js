@@ -20,7 +20,10 @@ const locationMessageTemplate = document.querySelector('#location-message-templa
 // это то сообщение на которое срабатывает браузер
 socket.on('message', (message) => {
     console.log('from server message:', message) // внизу короткая форма message: message (можно передавать объект с людыми парами ключ\значение)
-    const html = Mustache.render(messageTemplate, {message}) // первый агрумент - шаблон, дальше его параметры
+    const html = Mustache.render(messageTemplate, {
+        message: message.text, 
+        createdAt: moment(message.createdAt).format('HH:mm') // разобрался)
+    }) // первый агрумент - шаблон, дальше его параметры
     $messages.insertAdjacentHTML('beforeend', html) // первый аргумент говорит о том где расположен вставляемый элемент
 })
 
