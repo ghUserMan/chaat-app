@@ -3,10 +3,6 @@
 // и эта штука такио ткроет осединение
 const socket = io() // сохраняем открытый сокет
 
-socket.on('message', (message) => {
-    console.log('from server message:', message)
-})
-
 // elements
 // такое имя по соглашению - то что взято из dom
 const $messageForm = document.querySelector('#message-form') 
@@ -14,6 +10,18 @@ const $messageFormInput = $messageForm.querySelector('input')
 const $messageFormButton = $messageForm.querySelector('button')
 
 const $sendLocationButton = document.querySelector('#send-location') 
+
+const $messages = document.querySelector('#messages')
+
+// Templates
+const messageTemplate = document.querySelector('#message-template').innerHTML
+
+// это то сообщенеи на которое срабатывает браузер
+socket.on('message', (message) => {
+    console.log('from server message:', message) // внизу короткая форма message: message (можно передавать объект с людыми парами ключ\значение)
+    const html = Mustache.render(messageTemplate, {message}) // первый агрумент - шаблон, дальше его параметры
+    $messages.insertAdjacentHTML('beforeend', html) // первый аргумент говорит о том где расположен вставляемый элемент
+})
 
 // const sendMessage = document.querySelector('#message-form') 
 $messageForm.addEventListener('submit', (event) => {
