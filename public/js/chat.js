@@ -28,10 +28,13 @@ socket.on('message', (message) => {
 })
 
 // это то сообщение на которое срабатывает браузер
-socket.on('locationMessage', (url) => {
-    console.log('from server locationMessage:', url) 
+socket.on('locationMessage', (message) => {
+    console.log('from server locationMessage:', message) 
     // теперь суём сюда другой шаблон
-    const html = Mustache.render(locationMessageTemplate, {url}) // первый агрумент - шаблон, дальше его параметры
+    const html = Mustache.render(locationMessageTemplate, {
+        url: message.url, 
+        createdAt: moment(message.createdAt).format('HH:mm')
+    }) // первый агрумент - шаблон, дальше его параметры
     $messages.insertAdjacentHTML('beforeend', html) // первый аргумент говорит о том где расположен вставляемый элемент
 })
 

@@ -71,3 +71,6 @@ now.getDate() - день месяца
 now.getTime() - милисекунды юникс
 Сервер будет генерировать, а в браузере фоматировать
 https://momentjs.com
+
+### 17.14 Timestamps for Location Messages
+Всё что и в 13 уроке, но для местоположения

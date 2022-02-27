@@ -3,7 +3,10 @@ const http = require('http') // уже используем в  express
 const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
-const {generateMessage} = require('./utils/messages')
+const {
+    generateMessage,
+    generateLocationMessage
+} = require('./utils/messages')
 
 
 const app = express()
@@ -58,7 +61,7 @@ io.on('connection', (socket) => {
         // console.log('location from client', coords.longitude, coords.latitude)
         // io.emit('message', `Location: ${coords.longitude}, ${coords.latitude} `)
         const location = `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
-        io.emit('locationMessage', location) // сделали альтернативный тип сообщения // всем
+        io.emit('locationMessage', generateLocationMessage(location)) // сделали альтернативный тип сообщения // всем
         callback()
     })
 
