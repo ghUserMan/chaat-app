@@ -1,6 +1,6 @@
 const users = []
 
-// addUser, removeUser, getUser, retUsersInRoom
+// addUser, removeUser, getUser, getUsersInRoom
 
 //* id это нечно связанное с конкретным сокетом
 const addUser = ({ id, username, room }) => {
@@ -45,29 +45,20 @@ const removeUser = (id) => {
     }
 }
 
-
-
-module.exports = {
-    addUser
+const getUser = (id) => {
+    // ищем пользователя я массиве
+    return users.find((user) => user.id === id)
 }
 
-addUser({
-    id: 1,
-    username: '   ffDd',
-    room: 'sSs'
-})
+const getUsersInRoom = (room) => {
+    // достаём список участников комнаты
+    room = room.trim().toLowerCase() // как быть тут с неопределённым значением?
+    return users.filter((user) => user.room === room)
+}
 
-console.log(users)
-
-const res = addUser({
-    id: 2,
-    username: ' ffDtd  ',
-    room: 'sSs'
-})
-
-console.log(res)
-
-const rem = removeUser(2)
-
-console.log('removed', rem)
-console.log(users)
+module.exports = {
+    addUser,
+    removeUser,
+    getUser,
+    getUsersInRoom
+}
