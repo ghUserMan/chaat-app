@@ -13,9 +13,12 @@ const $sendLocationButton = document.querySelector('#send-location')
 
 const $messages = document.querySelector('#messages')
 
+const $sidebar = document.querySelector('#sidebar')
+
 // Templates
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationMessageTemplate = document.querySelector('#location-message-template').innerHTML
+const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
 // Options
 const { username, room } = Qs.parse(location.search, {ignoreQueryPrefix: true})
@@ -42,6 +45,18 @@ socket.on('locationMessage', (message) => {
         createdAt: moment(message.createdAt).format('HH:mm')
     }) // первый агрумент - шаблон, дальше его параметры
     $messages.insertAdjacentHTML('beforeend', html) // первый аргумент говорит о том где расположен вставляемый элемент
+})
+
+// это то сообщение на которое срабатывает браузер
+socket.on('roomData', ({room, users}) => {
+    console.log('room:', room) 
+    console.log('users:', users) 
+    // jnhbcjdrf b dcnfdrf
+    const html = Mustache.render(sidebarTemplate, {
+        room,
+        users
+    })
+    $sidebar.innerHTML = html
 })
 
 // const sendMessage = document.querySelector('#message-form') 

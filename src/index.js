@@ -57,6 +57,12 @@ io.on('connection', (socket) => {
         socket.emit('message', generateMessage('Admin', 'Welcome!')) // себе, новый формат {test: "message", createdAt: new Date().getTime()}
         socket.broadcast.to(user.room).emit('message', generateMessage('Admin', `${user.username} has joined`)) // Остальным что кто-то подключился
     
+        // данные для заполенния комнаты
+        io.to(user.room).emit('roomData', {
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        })
+
         callback() // уведомление об успехе
 
         // обычно
@@ -113,6 +119,11 @@ io.on('connection', (socket) => {
         if (user) {
             // остальным что ушёл говорим в отдельную комнату
             io.to(user.room).emit('message', generateMessage('Admin', `${user.username} has left!`))// посылаем всем потому что нет смысла исключать текущего, он и так отключился   
+            // данные для заполенния комнаты
+            io.to(user.room).emit('roomData', {
+                room: user.room,
+                users: getUsersInRoom(user.room)
+            })
         }
     })
 })
