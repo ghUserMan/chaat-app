@@ -35,8 +35,23 @@ app.get('/hi', (req, res) => {
 io.on('connection', (socket) => {
     console.log('new websocket connection')
 
-    socket.emit('message', generateMessage('Welcome!')) // себе, новый формат {test: "message", createdAt: new Date().getTime()}
-    socket.broadcast.emit('message', generateMessage('New user joined')) // Остальным что кто-то подключился
+    // socket.emit('message', generateMessage('Welcome!')) // себе, новый формат {test: "message", createdAt: new Date().getTime()}
+    // socket.broadcast.emit('message', generateMessage('New user joined')) // Остальным что кто-то подключился
+
+    //eventlistener join
+    socket.on('join', ({ username, room }) => {
+        // магия создания комнат
+        socket.join(room)
+
+        socket.emit('message', generateMessage('Welcome!')) // себе, новый формат {test: "message", createdAt: new Date().getTime()}
+        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined`)) // Остальным что кто-то подключился
+    
+        // обычно
+        // socket.emit io.emit socket.broadcast.emit
+        // с комнатами появляюстя
+        // io.to.emit -- всем в какой-то комнате
+        // socket.broadcast.to.emit -- по аналогии
+    })
 
     //eventlistener
     socket.on('sendMessage', (text, callback) => { //
@@ -47,6 +62,7 @@ io.on('connection', (socket) => {
         }
 
         console.log('from client', text)
+        // будем прокачивать этот метод до io.to('???').emit
         io.emit('message', generateMessage(text)) // всем
         // callback('Yes') // само подтверждение, можно по своему усмотрению епердать аргумент
         callback()
@@ -71,7 +87,6 @@ io.on('connection', (socket) => {
         io.emit('message', generateMessage('user dicsonnected'))// посылаем всем потому что нет смысла исключать текущего, он и так отключился
     })
 })
-
 
 server.listen(port, () => {
     console.log('Server is up on port', port)

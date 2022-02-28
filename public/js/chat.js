@@ -17,6 +17,10 @@ const $messages = document.querySelector('#messages')
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationMessageTemplate = document.querySelector('#location-message-template').innerHTML
 
+// Options
+const { username, room } = Qs.parse(location.search, {ignoreQueryPrefix: true})
+
+
 // это то сообщение на которое срабатывает браузер
 socket.on('message', (message) => {
     console.log('from server message:', message) // внизу короткая форма message: message (можно передавать объект с людыми парами ключ\значение)
@@ -80,3 +84,6 @@ $sendLocationButton.addEventListener('click', (event) => {
         })
     })
 })
+
+// Новый вид сообщения
+socket.emit('join', {username, room})
