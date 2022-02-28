@@ -24,6 +24,34 @@ const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 const { username, room } = Qs.parse(location.search, {ignoreQueryPrefix: true})
 
 
+const autoscroll = () => {
+    // new message element
+    const $newMessage = $messages.lastElementChild
+
+    // height of the mew message
+    const newMessageStyles = getComputedStyle($newMessage)
+    const newMessgeMargin = parseInt(newMessageStyles.marginBottom)
+    // высоат последнего сообщения
+    const newMessgeHeight = $newMessage.offsetHeight + newMessgeMargin
+    
+    // visible height
+    const visibleHeight = $messages.offsetHeight
+
+    // height off messages container
+    const containerHeight = $messages.scrollHeight
+
+    //how far am i scroled
+    const scrollOffset = $messages.scrollTop + visibleHeight
+
+    if (containerHeight - newMessgeHeight <= scrollOffset) {
+        // вариант когда мы и так были на самом дне
+        $messages.scrollTop = $messages.scrollHeight // не на все 100 работает
+    } else { 
+        // варинат когда клиент что-то выще ищет
+    }
+}
+
+
 // это то сообщение на которое срабатывает браузер
 socket.on('message', (message) => {
     console.log('from server message:', message) // внизу короткая форма message: message (можно передавать объект с людыми парами ключ\значение)
@@ -33,6 +61,7 @@ socket.on('message', (message) => {
         createdAt: moment(message.createdAt).format('HH:mm') // разобрался)
     }) // первый агрумент - шаблон, дальше его параметры
     $messages.insertAdjacentHTML('beforeend', html) // первый аргумент говорит о том где расположен вставляемый элемент
+    autoscroll()
 })
 
 // это то сообщение на которое срабатывает браузер
@@ -45,6 +74,7 @@ socket.on('locationMessage', (message) => {
         createdAt: moment(message.createdAt).format('HH:mm')
     }) // первый агрумент - шаблон, дальше его параметры
     $messages.insertAdjacentHTML('beforeend', html) // первый аргумент говорит о том где расположен вставляемый элемент
+    autoscroll()
 })
 
 // это то сообщение на которое срабатывает браузер
