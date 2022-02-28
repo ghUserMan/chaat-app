@@ -86,4 +86,10 @@ $sendLocationButton.addEventListener('click', (event) => {
 })
 
 // Новый вид сообщения
-socket.emit('join', {username, room})
+socket.emit('join', {username, room}, (error) => {
+    // callback на случай ошибки
+    if (error) {
+        alert(error)
+        location.href = '/' // redirect  на главную страницу
+    }
+})

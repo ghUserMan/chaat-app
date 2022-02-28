@@ -7,7 +7,12 @@ const {
     generateMessage,
     generateLocationMessage
 } = require('./utils/messages')
-
+const {
+    addUser,
+    removeUser,
+    getUser,
+    getUsersInRoom
+} = require('./utils/users')
 
 const app = express()
 const server = http.createServer(app) // такая магия тоже происходит и без нас, но
@@ -39,13 +44,21 @@ io.on('connection', (socket) => {
     // socket.broadcast.emit('message', generateMessage('New user joined')) // Остальным что кто-то подключился
 
     //eventlistener join
-    socket.on('join', ({ username, room }) => {
-        // магия создания комнат
-        socket.join(room)
+    socket.on('join', (options, callback) => {  //socket.on('join', ({ username, room }, callback) => {
+        // магия создания комнат 
+
+        const { error, user } = addUser({id: socket.id, ...options}) //const { error, user } = addUser({id: socket.id, username, room}) // красота
+        if (error) {
+            return callback(error) // return чтобы выполнение кода закончилось
+        }
+
+        socket.join(user.room) // отсюдда будес следить за плоьзователем
 
         socket.emit('message', generateMessage('Welcome!')) // себе, новый формат {test: "message", createdAt: new Date().getTime()}
-        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined`)) // Остальным что кто-то подключился
+        socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined`)) // Остальным что кто-то подключился
     
+        callback() // уведомление об успехе
+
         // обычно
         // socket.emit io.emit socket.broadcast.emit
         // с комнатами появляюстя
@@ -83,8 +96,11 @@ io.on('connection', (socket) => {
 
     // отключение в таком старнном месте
     socket.on('disconnect', () => {
-        // остальным что ушёл
-        io.emit('message', generateMessage('user dicsonnected'))// посылаем всем потому что нет смысла исключать текущего, он и так отключился
+        const user = removeUser(socket.id)
+        if (user) {
+            // остальным что ушёл говорим в отдельную комнату
+            io.to(user.room).emit('message', generateMessage(`${user.username} has left!`))// посылаем всем потому что нет смысла исключать текущего, он и так отключился   
+        }
     })
 })
 
