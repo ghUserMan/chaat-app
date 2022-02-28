@@ -74,3 +74,6 @@ https://momentjs.com
 
 ### 17.14 Timestamps for Location Messages
 Всё что и в 13 уроке, но для местоположения
+
+### 17.15 Styling the Chat App
+Прикручиваем стили к приложению

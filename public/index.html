@@ -1,29 +1,46 @@
 <!DOCTYPE html>
 <head>
     <title>Chat</title>
+    <link rel="icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
-    <h1>Chat App</h1>
-
-    <!-- это контейнер для сообщений -->
-    <div id="messages"></div>
-
-    <form id="message-form">
-        <input placeholder="Message" name="message">
-        <button id="sendMessage">Say</button>
-    </form>
-    <button id ="send-location">Send location</button>
+    <div class="chat">
+        <div class="chat__sidebar">
+        </div>
+        <div class="chat__main">
+            <h1>Chat App</h1>
+            <!-- это контейнер для сообщений -->
+            <div id="messages" class="chat__messages"></div>
+        
+            <div class="compose">
+                <form id="message-form">
+                    <input placeholder="Message" name="message">
+                    <button id="sendMessage">Say</button>
+                </form>
+                <button id ="send-location">Send location</button> 
+            </div> 
+        </div>
+    </div>
 
     <!-- шаблон для сообщений -->
     <script id="message-template" type="text/html">
-        <div>
-            <p>{{createdAt}} - {{message}}</p>    
+        <div class="message">
+            <p>
+                <span class="message__name">User name</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p>{{message}}</p>    
         </div>
     </script>
     <!-- шаблон для местонахождения -->
     <script id="location-message-template" type="text/html">
-        <div>
-            <p>{{createdAt}} - <a href="{{url}}" target="_blank">My current location</a></p>
+        <div class="message">
+            <p>
+                <span class="message__name">User name</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p><a href="{{url}}" target="_blank">My current location</a></p>
         </div>
     </script>
 
