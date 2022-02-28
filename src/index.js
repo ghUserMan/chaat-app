@@ -54,8 +54,8 @@ io.on('connection', (socket) => {
 
         socket.join(user.room) // отсюдда будес следить за плоьзователем
 
-        socket.emit('message', generateMessage('Welcome!')) // себе, новый формат {test: "message", createdAt: new Date().getTime()}
-        socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined`)) // Остальным что кто-то подключился
+        socket.emit('message', generateMessage('Admin', 'Welcome!')) // себе, новый формат {test: "message", createdAt: new Date().getTime()}
+        socket.broadcast.to(user.room).emit('message', generateMessage('Admin', `${user.username} has joined`)) // Остальным что кто-то подключился
     
         callback() // уведомление об успехе
 
@@ -69,6 +69,12 @@ io.on('connection', (socket) => {
     //eventlistener
     socket.on('sendMessage', (text, callback) => { //
 
+        const user = getUser(socket.id)
+
+        if (!user) {
+            return {error: 'no such user'}
+        }
+
         const filter = new Filter()
         if (filter.isProfane(text)) {
             return callback('Some word is not allowed') // типа если есть ошибка - сообщаем о ней, иначе ответим пустотой
@@ -76,7 +82,7 @@ io.on('connection', (socket) => {
 
         console.log('from client', text)
         // будем прокачивать этот метод до io.to('???').emit
-        io.emit('message', generateMessage(text)) // всем
+        io.to(user.room).emit('message', generateMessage(user.username, text)) // всем
         // callback('Yes') // само подтверждение, можно по своему усмотрению епердать аргумент
         callback()
     })
@@ -87,10 +93,17 @@ io.on('connection', (socket) => {
     //     socket.broadcast.emit('message', `Location: ${longitude}, ${latitude} `)
     // })
     socket.on('sendLocation', (coords, callback) => {
+
+        const user = getUser(socket.id)
+
+        if (!user) {
+            return {error: 'no such user'}
+        }
+
         // console.log('location from client', coords.longitude, coords.latitude)
         // io.emit('message', `Location: ${coords.longitude}, ${coords.latitude} `)
         const location = `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
-        io.emit('locationMessage', generateLocationMessage(location)) // сделали альтернативный тип сообщения // всем
+        io.to(user.room).emit('locationMessage', generateLocationMessage(user.username, location)) // сделали альтернативный тип сообщения // всем
         callback()
     })
 
@@ -99,7 +112,7 @@ io.on('connection', (socket) => {
         const user = removeUser(socket.id)
         if (user) {
             // остальным что ушёл говорим в отдельную комнату
-            io.to(user.room).emit('message', generateMessage(`${user.username} has left!`))// посылаем всем потому что нет смысла исключать текущего, он и так отключился   
+            io.to(user.room).emit('message', generateMessage('Admin', `${user.username} has left!`))// посылаем всем потому что нет смысла исключать текущего, он и так отключился   
         }
     })
 })

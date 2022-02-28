@@ -25,6 +25,7 @@ const { username, room } = Qs.parse(location.search, {ignoreQueryPrefix: true})
 socket.on('message', (message) => {
     console.log('from server message:', message) // внизу короткая форма message: message (можно передавать объект с людыми парами ключ\значение)
     const html = Mustache.render(messageTemplate, {
+        username: message.username, 
         message: message.text, 
         createdAt: moment(message.createdAt).format('HH:mm') // разобрался)
     }) // первый агрумент - шаблон, дальше его параметры
@@ -36,6 +37,7 @@ socket.on('locationMessage', (message) => {
     console.log('from server locationMessage:', message) 
     // теперь суём сюда другой шаблон
     const html = Mustache.render(locationMessageTemplate, {
+        username: message.username,
         url: message.url, 
         createdAt: moment(message.createdAt).format('HH:mm')
     }) // первый агрумент - шаблон, дальше его параметры
